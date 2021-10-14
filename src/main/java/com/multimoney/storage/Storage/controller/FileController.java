@@ -23,6 +23,26 @@ import com.multimoney.storage.Storage.message.ResponseFile;
 
 import com.multimoney.storage.Storage.repository.FileRepository;
 
+import com.multimoney.storage.Storage.model.File;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+ 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 @Controller
 @CrossOrigin("http://localhost:8081")
 public class FileController {
@@ -42,5 +62,25 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
       }
     }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable String id) {
+      File file = storageService.getFile(id);
+  
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
+          .body(file.getData());
+    }
+
+    
+    @GetMapping("/show/{id}")
+    @ResponseBody
+    public ResponseEntity<byte[]> getImage(@PathVariable String id) throws Exception {
+      File file = storageService.getFile(id);
+      return ResponseEntity.ok().contentType(MediaType.valueOf(file.getType())).body(file.getData());
+    }
+    
+
+
 
 }
