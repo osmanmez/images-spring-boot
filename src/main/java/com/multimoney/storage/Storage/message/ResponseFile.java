@@ -1,4 +1,4 @@
-package com.multimoney.storage.Storage.exception;
+package com.multimoney.storage.Storage.message;
 
 public class ResponseFile {
     private String name;
